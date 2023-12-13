@@ -66,17 +66,17 @@ class ProductView(generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIV
         return super().get_permissions()
 
     def create(self, request, *args, **kwargs):
-        if not request.user.is_staff:
+        if not request.user.is_admin:
             return Response({'error': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
-        if not request.user.is_staff:
+        if not request.user.is_admin:
             return Response({'error': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
         return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
-        if not request.user.is_staff:
+        if not request.user.is_admin:
             return Response({'error': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
 
@@ -133,14 +133,14 @@ class OrdersView(generics.ListAPIView, generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        if self.request.user.is_staff:
+        if self.request.user.is_admin:
             return models.Order.objects.all()
         else:
             return models.Order.objects.filter(user=self.request.user)
 
     def update(self, request, *args, **kwargs):
 
-        if not request.user.is_staff:
+        if not request.user.is_admin:
             return Response({'error': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
 
         instance = self.get_object()
